@@ -59,7 +59,6 @@ class Board:
                     whiteNumber += 1
         return blackNumber, whiteNumber
 
-
     def getPossibleMovesForPlayer(self, player):
         return [35, 21, 30, 44]
 
