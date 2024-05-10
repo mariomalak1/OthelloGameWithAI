@@ -27,10 +27,10 @@
 # print(60 % 8, 60 // 8)
 
 if __name__ == "__main__":
-    from Models.Board import Board
-    b = Board()
-    b.printBoard()
-    # from Models.GameManager import GameManager
-    # gameManager = GameManager()
-    # gameManager.start()
+    # from Models.Board import Board
+    # b = Board()
+    # b.printBoard()
+    from Models.GameManager import GameManager
+    gameManager = GameManager()
+    gameManager.start()
 

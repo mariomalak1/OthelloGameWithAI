@@ -15,5 +15,6 @@ class Player:
             else:
                 return num
                 break
+
     def __str__(self):
         return f"Player Name : {self.name} it's color : {self.color}"

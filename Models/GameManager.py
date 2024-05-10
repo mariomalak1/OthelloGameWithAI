@@ -5,21 +5,16 @@ class GameManager:
     _PlayWithSomeOne = 2
 
     def __init__(self):
-        self.board = None
+        self.board = Board.Board()
         self.player1 = Player.Player(None, None)
         self.player2 = Player.Player(None, None)
         self.playWay = 0
 
-        # in first the two players will have two coins
+        # in first the two players will have two disks
         # first score player1
         self.score = [2, 2]
 
-    # has all logic for the game play
-    def game(self):
-        pass
-
-
-    # will get all needed data from user -> like name, color, need to play with computer or someone as an opponent
+    # will start the game from scratch, and ask the first user his name
     def start(self):
         print("Welcome Othello Game")
 
@@ -28,9 +23,34 @@ class GameManager:
         self.player1.name = name
         self.player1.color = "black"
 
+        self.main()
+
+    # has all logic for the game play
+    def game(self):
+        while True:
+            self.board.printBoard()
+            print(f"Score Black : {self.score[0]} | White : {self.score[1]}")
+
+            # check for draw
+            if self.checkDraw():
+                print("No one is winner, it's draw.")
+                self.endOfGame()
+
+            # check if anyone win
+            winner = self.checkWinner()
+
+            if winner:
+                if winner.name == "computer":
+                    print("you lose.")
+                self.endOfGame()
+
+
+    # will get all needed data from user -> like name, color, need to play with computer or someone as an opponent
+    def main(self):
         # ask him to play with computer or will play with someone
         while True:
-            wayToPlay = input(f"hey {self.player1.name} if you want to play with computer press Y, else if you want to play with someone press X :")
+            wayToPlay = input(
+                f"hey {self.player1.name} if you want to play with computer press Y, else if you want to play with someone press X :")
             if wayToPlay.lower() == "y":
                 self.playWay = GameManager._PlayWithComputer
                 self.player2.name = "computer"
@@ -48,8 +68,16 @@ class GameManager:
         # start the game pay
         self.game()
 
+    def endOfGame(self):
+        print("game finish.")
+        playAgain = input("if you want to play again press Y, else press X: ")
+        if playAgain.lower() == "x":
+            print("Bye.")
+            exit(0)
+        elif playAgain.lower() == "y":
+            self.main()
 
-    # will check that any player is winner or it's draw or nothing
+    # will check that any player is winner
     def checkWinner(self) -> Player.Player:
         if self.score[0] > self.score[1]:
             return self.player1
@@ -57,9 +85,14 @@ class GameManager:
             return self.player2
         return None
 
+    def checkDraw(self) -> bool:
+        if self.score[0] == self.score[1]:
+            return True
+        return False
+
     # will check can the player play his turn or not
     def checkStatus(self, player):
-        possiblePlays = self.board.getPossiblePlaysForPlayer(player)
+        possiblePlays = self.board.getPossibleMovesForPlayer(player)
         if possiblePlays:
             return possiblePlays
         return None

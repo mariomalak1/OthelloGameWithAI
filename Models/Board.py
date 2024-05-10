@@ -10,7 +10,6 @@ class Board:
                 row.append(number)
 
 
-
     def printBoard(self):
         print("-" * 33)
         for row in self.holeBoard:
@@ -31,7 +30,7 @@ class Board:
         pass
 
 
-    def getPossiblePlaysForPlayer(self, player):
+    def getPossibleMovesForPlayer(self, player):
         pass
 
 
