@@ -26,14 +26,8 @@
 # print(59 % 8, 59 // 8)
 # print(60 % 8, 60 // 8)
 
-
-def maio(color = None):
-    if color:
-        print(color)
-    else:
-        color = "mario"
-        print("no color")
-
-
 if __name__ == "__main__":
-    maio()
+    from Models.GameManager import GameManager
+    gameManager = GameManager()
+    gameManager.start()
+

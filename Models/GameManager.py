@@ -3,11 +3,16 @@ from . import Player, Board
 class GameManager:
     _PlayWithComputer = 1
     _PlayWithSomeOne = 2
+
     def __init__(self):
         self.board = None
-        self.player1 = None
-        self.player2 = None
+        self.player1 = Player.Player(None, None)
+        self.player2 = Player.Player(None, None)
         self.playWay = 0
+
+        # in first the two players will have two coins
+        # first score player1
+        self.score = [2, 2]
 
     # has all logic for the game play
     def game(self):
@@ -45,13 +50,24 @@ class GameManager:
 
 
     # will check that any player is winner or it's draw or nothing
-    def checkWinner(self):
-        pass
+    def checkWinner(self) -> Player.Player:
+        if self.score[0] > self.score[1]:
+            return self.player1
+        elif self.score[0] < self.score[1]:
+            return self.player2
+        return None
 
     # will check can the player play his turn or not
-    def checkStatus(self):
-        pass
+    def checkStatus(self, player):
+        possiblePlays = self.board.getPossiblePlaysForPlayer(player)
+        if possiblePlays:
+            return possiblePlays
+        return None
 
-    def getScore(self):
-        pass
+    def updateScore(self):
+        black = self.board.getBlackNumber()
+        white = self.board.getWhiteNumber()
+
+        self.score[0] = black
+        self.score[1] = white
 
