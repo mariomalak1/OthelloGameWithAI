@@ -1,4 +1,4 @@
-from . import Player, Board
+from . import Player, Board, Disk
 
 class GameManager:
     _PlayWithComputer = 1
@@ -6,13 +6,10 @@ class GameManager:
 
     def __init__(self):
         self.board = Board.Board()
+
         self.player1 = Player.Player(None, None)
         self.player2 = Player.Player(None, None)
         self.playWay = 0
-
-        # in first the two players will have two disks
-        # first score player1
-        self.score = [2, 2]
 
     # will start the game from scratch, and ask the first user his name
     def start(self):
@@ -23,13 +20,30 @@ class GameManager:
         self.player1.name = name
         self.player1.color = "black"
 
+        # create four disks as a begin of the game, and center them in the middle
+        blackDisk1 = Disk.Disk("black", 29)
+        blackDisk2 = Disk.Disk("black", 36)
+        whiteDisk1 = Disk.Disk("white", 28)
+        whiteDisk2 = Disk.Disk("white", 37)
+
+        self.board.putDiskInPosition(whiteDisk1)
+        self.board.putDiskInPosition(blackDisk1)
+        self.board.putDiskInPosition(blackDisk2)
+        self.board.putDiskInPosition(whiteDisk2)
+
         self.main()
 
     # has all logic for the game play
     def game(self):
         while True:
             self.board.printBoard()
-            print(f"Score Black : {self.score[0]} | White : {self.score[1]}")
+
+            lis = self.board.getPossibleMovesForPlayer(self.player1)
+
+            self.board.printBoard(lis)
+
+
+            break
 
             # check for draw
             if self.checkDraw():
@@ -96,11 +110,3 @@ class GameManager:
         if possiblePlays:
             return possiblePlays
         return None
-
-    def updateScore(self):
-        black = self.board.getBlackNumber()
-        white = self.board.getWhiteNumber()
-
-        self.score[0] = black
-        self.score[1] = white
-

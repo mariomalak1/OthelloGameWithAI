@@ -34,3 +34,7 @@ if __name__ == "__main__":
     gameManager = GameManager()
     gameManager.start()
 
+    # print(28 % 8, 29 // 8)
+
+
+
