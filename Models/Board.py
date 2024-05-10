@@ -41,14 +41,14 @@ class Board:
         print(f"Score Black : {black} | White : {white}")
 
 
-    def getRowColOfDisk(self, disk):
-        col = (disk.position % Board.boardSize) - 1
-        row = disk.position // Board.boardSize
+    def getRowColOfDisk(self, position):
+        col = (position % Board.boardSize) - 1
+        row = position // Board.boardSize
         return row, col
 
 
     def putDiskInPosition(self, disk):
-        row, col = self.getRowColOfDisk(disk)
+        row, col = self.getRowColOfDisk(disk.position)
         self.holeBoard[row][col] = disk
 
 
@@ -75,9 +75,9 @@ class Board:
 
         return allPossibleMoves
 
-
+    # to get all disks around a disk that empty
     def getAllEmptyDisksAroundDisk(self, disk: Disk) -> list:
-        row, col = self.getRowColOfDisk(disk)
+        row, col = self.getRowColOfDisk(disk.position)
         emptyDisks = []
 
         # get the left disk if found and not empty
@@ -106,7 +106,18 @@ class Board:
 
         return emptyDisks
 
+    # get all disks needed to flibs
+    def getFlibs(self, playedDisk: Disk):
+        playedDisk.color
 
-    def getFlibs(self):
-        pass
+    def getDiskFromPostion(self, position):
+        row, col = self.getRowColOfDisk(position)
+        return self.holeBoard[row][col]
 
+    # check that no empty disk found
+    def noEmptyDisk(self) -> bool:
+        for row in self.holeBoard:
+            for cell in row:
+                if not cell.color:
+                    return False
+        return True

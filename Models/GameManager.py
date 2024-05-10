@@ -36,26 +36,31 @@ class GameManager:
     # has all logic for the game play
     def game(self):
         while True:
-            self.board.printBoard()
+            while True:
+                possibleMovesPlayer1 = self.board.getPossibleMovesForPlayer(self.player1)
+                self.board.printBoard(possibleMovesPlayer1)
+                playerMove = self.player1.getInput()
+                disk = self.board.getDiskFromPostion(playerMove)
+                if disk in possibleMovesPlayer1:
+                    disk.putColor(self.player1.color)
+                    break
+                else:
+                    print("Enter position for move that in avaliable only.")
 
-            lis = self.board.getPossibleMovesForPlayer(self.player1)
+            # check that the game is end
+            if self.board.noEmptyDisk():
+                # check for draw
+                if self.checkDraw():
+                    print("No one is winner, it's draw.")
+                    self.endOfGame()
 
-            self.board.printBoard(lis)
+                # check if anyone win
+                winner = self.checkWinner()
 
-            break
-
-            # check for draw
-            if self.checkDraw():
-                print("No one is winner, it's draw.")
-                self.endOfGame()
-
-            # check if anyone win
-            winner = self.checkWinner()
-
-            if winner:
-                if winner.name == "computer":
-                    print("you lose.")
-                self.endOfGame()
+                if winner:
+                    if winner.name == "computer":
+                        print("you lose.")
+                    self.endOfGame()
 
 
     # will get all needed data from user -> like name, color, need to play with computer or someone as an opponent
@@ -92,14 +97,14 @@ class GameManager:
 
     # will check that any player is winner
     def checkWinner(self) -> Player.Player:
-        if self.score[0] > self.score[1]:
+        if self.board.score[0] > self.board.score[1]:
             return self.player1
-        elif self.score[0] < self.score[1]:
+        elif self.board.score[0] < self.board.score[1]:
             return self.player2
         return None
 
     def checkDraw(self) -> bool:
-        if self.score[0] == self.score[1]:
+        if self.board.score[0] == self.board.score[1]:
             return True
         return False
 
