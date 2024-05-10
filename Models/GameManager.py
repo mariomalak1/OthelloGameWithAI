@@ -38,14 +38,18 @@ class GameManager:
         while True:
             while True:
                 possibleMovesPlayer1 = self.board.getPossibleMovesForPlayer(self.player1)
-                self.board.printBoard(possibleMovesPlayer1)
-                playerMove = self.player1.getInput()
-                disk = self.board.getDiskFromPostion(playerMove)
-                if disk in possibleMovesPlayer1:
-                    disk.putColor(self.player1.color)
-                    break
+                if possibleMovesPlayer1:
+                    self.board.printBoard(possibleMovesPlayer1)
+                    playerMove = self.player1.getInput()
+                    disk = self.board.getDiskFromPostion(playerMove)
+                    if disk in possibleMovesPlayer1:
+                        disk.putColor(self.player1.color)
+                        break
+                    else:
+                        print("Enter position for move that in avaliable only.")
                 else:
-                    print("Enter position for move that in avaliable only.")
+                    print("Your turn skipped.")
+                    break
 
             # check that the game is end
             if self.board.noEmptyDisk():
@@ -107,10 +111,3 @@ class GameManager:
         if self.board.score[0] == self.board.score[1]:
             return True
         return False
-
-    # will check can the player play his turn or not
-    def checkStatus(self, player):
-        possiblePlays = self.board.getPossibleMovesForPlayer(player)
-        if possiblePlays:
-            return possiblePlays
-        return None
