@@ -25,10 +25,7 @@ class Disk:
             self.colorCode = Fore.RED
 
     def putColor(self, color):
-        print("iam here")
-
         if str(color).lower() == "black":
-            print("hehhehe")
             self.color = "black"
             self.colorCode = Fore.RED
         elif str(color).lower() == "white":

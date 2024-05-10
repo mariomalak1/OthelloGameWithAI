@@ -42,14 +42,17 @@ class GameManager:
                     self.board.printBoard(possibleMovesPlayer1)
                     playerMove = self.player1.getInput()
                     disk = self.board.getDiskFromPostion(playerMove)
-                    disksNeedToFlib = self.board.getFlibs(disk)
-
-                    if disksNeedToFlib:
-                        self.board.flibDisks(disksNeedToFlib)
 
                     if disk in possibleMovesPlayer1:
                         disk.putColor(self.player1.color)
-                        break
+                        disk.color = self.player1.color
+
+                        disksNeedToFlib = self.board.getFlibs(disk)
+
+                        if disksNeedToFlib:
+                            self.board.flibDisks(disksNeedToFlib)
+                            break
+
                     else:
                         print("Enter position for move that in avaliable only.")
                 else:
@@ -57,6 +60,7 @@ class GameManager:
                     break
 
             # check that the game is end
+            # check if no one can play for now, then show the results
             if self.board.noEmptyDisk():
                 # check for draw
                 if self.checkDraw():
