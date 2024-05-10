@@ -108,7 +108,103 @@ class Board:
 
     # get all disks needed to flibs
     def getFlibs(self, playedDisk: Disk):
+
         playedDisk.color
+
+    def getAllDisksInRow(self, row: int):
+        if row > 7 or row < 0:
+            return []
+        return self.holeBoard[row]
+
+    def getAllDisksInCol(self, col: int):
+        disksInCol = []
+        if col > 7 or col < 0:
+            return disksInCol
+
+        for row in self.holeBoard:
+            disksInCol.append(row[col])
+        return disksInCol
+
+    def getAllDisksInDiagonal(self, row: int, col: int):
+        rightDiagonal = []
+        leftDiagonal = []
+
+        # append the played disk in the branch
+        disk = self.holeBoard[row][col]
+        rightDiagonal.append(disk)
+        leftDiagonal.append(disk)
+
+        copyRow = row
+        copyCol = col
+
+        # get right diagonal
+
+        # get the upper part
+        while True:
+            copyRow -= 1
+            copyCol += 1
+            if not (copyRow > 7 and copyRow > 0 and copyCol > 7 and copyCol < 0):
+                disk = self.holeBoard[copyRow][copyCol]
+                rightDiagonal.append(disk)
+            else:
+                break
+
+        # get the lower part
+        copyRow = row
+        copyCol = col
+
+        while True:
+            copyRow += 1
+            copyCol -= 1
+            if not (copyRow > 7 and copyRow > 0 and copyCol > 7 and copyCol < 0):
+                disk = self.holeBoard[copyRow][copyCol]
+                rightDiagonal.append(disk)
+            else:
+                break
+
+        # sort the right branch
+
+
+        # get left diagonal
+
+        # get the upper part
+        copyRow = row
+        copyCol = col
+
+        while True:
+            copyRow -= 1
+            copyCol -= 1
+            if not (copyRow > 7 and copyRow > 0 and copyCol > 7 and copyCol < 0):
+                disk = self.holeBoard[copyRow][copyCol]
+                leftDiagonal.append(disk)
+            else:
+                break
+
+        # get the lower part
+        copyRow = row
+        copyCol = col
+
+        while True:
+            copyRow += 1
+            copyCol += 1
+            if not (copyRow > 7 and copyRow > 0 and copyCol > 7 and copyCol < 0):
+                disk = self.holeBoard[copyRow][copyCol]
+                leftDiagonal.append(disk)
+            else:
+                break
+
+        # sort left branch
+
+        # must sort them according to it's position
+
+
+
+
+    def flibDisks(self, needToFlib: list):
+        for disk in needToFlib:
+            disk.flipDisk()
+
+
 
     def getDiskFromPostion(self, position):
         row, col = self.getRowColOfDisk(position)

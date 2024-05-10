@@ -42,6 +42,11 @@ class GameManager:
                     self.board.printBoard(possibleMovesPlayer1)
                     playerMove = self.player1.getInput()
                     disk = self.board.getDiskFromPostion(playerMove)
+                    disksNeedToFlib = self.board.getFlibs(disk)
+
+                    if disksNeedToFlib:
+                        self.board.flibDisks(disksNeedToFlib)
+
                     if disk in possibleMovesPlayer1:
                         disk.putColor(self.player1.color)
                         break
