@@ -29,7 +29,7 @@ class Board:
                     print(" ", end="")
 
                 if possibleMovesForPlayer:
-                    if disk.position in possibleMovesForPlayer:
+                    if disk in possibleMovesForPlayer:
                         print(f"{Fore.BLUE}{disk.position}", end="|")
                         continue
                 print(disk.colorCode, end="")
@@ -41,11 +41,16 @@ class Board:
         print(f"Score Black : {black} | White : {white}")
 
 
-    def putDiskInPosition(self, disk):
+    def getRowColOfDisk(self, disk):
         col = (disk.position % Board.boardSize) - 1
         row = disk.position // Board.boardSize
+        return row, col
 
+
+    def putDiskInPosition(self, disk):
+        row, col = self.getRowColOfDisk(disk)
         self.holeBoard[row][col] = disk
+
 
     def getScoreNumber(self):
         blackNumber = 0
@@ -60,7 +65,47 @@ class Board:
         return blackNumber, whiteNumber
 
     def getPossibleMovesForPlayer(self, player):
-        return [35, 21, 30, 44]
+        allPossibleMoves = []
+        for row in self.holeBoard:
+            for cell in row:
+                if cell.color:
+                    if cell.color != player.color:
+                        allEmptyDisksAround = self.getAllEmptyDisksAroundDisk(cell)
+                        allPossibleMoves = list(set(allPossibleMoves + allEmptyDisksAround))
+
+        return allPossibleMoves
+
+
+    def getAllEmptyDisksAroundDisk(self, disk: Disk) -> list:
+        row, col = self.getRowColOfDisk(disk)
+        emptyDisks = []
+
+        # get the left disk if found and not empty
+        if not col - 1 < 0:
+            disk1 = self.holeBoard[row][col - 1]
+            if not disk1.color:
+                emptyDisks.append(disk1)
+
+        # get the right disk if found and not empty
+        if not col + 1 > 7:
+            disk2 = self.holeBoard[row][col + 1]
+            if not disk2.color:
+                emptyDisks.append(disk2)
+
+        # get the above disk if found and not empty
+        if not row - 1 < 0:
+            disk3 = self.holeBoard[row - 1][col]
+            if not disk3.color:
+                emptyDisks.append(disk3)
+
+        # get the down disk if found and not empty
+        if not row + 1 > 7:
+            disk4 = self.holeBoard[row + 1][col]
+            if not disk4.color:
+                emptyDisks.append(disk4)
+
+        return emptyDisks
+
 
     def getFlibs(self):
         pass

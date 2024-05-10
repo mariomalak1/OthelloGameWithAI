@@ -25,4 +25,7 @@ class Disk:
             self.colorCode = Fore.RED
 
     def __str__(self):
-        return self.color
+        str_ = str(self.position)
+        if self.color:
+            str_ += " Color : " + self.color
+        return str(str_)

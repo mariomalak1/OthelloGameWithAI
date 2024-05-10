@@ -42,7 +42,6 @@ class GameManager:
 
             self.board.printBoard(lis)
 
-
             break
 
             # check for draw
