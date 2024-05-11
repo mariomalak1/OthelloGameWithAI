@@ -86,7 +86,7 @@ class Board:
                     # try to get left way
                     copyPoistion = position
                     while True:
-                        if copyPoistion > len(branch):
+                        if copyPoistion > 0:
                             copyPoistion -= 1
                             disk2 = branch[copyPoistion]
                             if not disk2.color:
@@ -261,6 +261,7 @@ class Board:
                 disk = branch[position]
                 if disk == aroundDisk:
                     copyPostion = position
+
                     while cond:
                         if copyPostion > 0:
                             copyPostion -= 1
@@ -290,7 +291,39 @@ class Board:
                         else:
                             break
 
+                    cond = True
+                    copyPostion = position
+
+                    while cond:
+                        if copyPostion < len(branch) - 1:
+                            copyPostion += 1
+                            disk2 = branch[copyPostion]
+                            # if this disk is empty
+                            if not disk2.color:
+                                anothorPostionCopy = position
+                                # try to see if there's another disk with oppsite color in this branch in the other way
+                                while cond:
+                                    if anothorPostionCopy > 0:
+                                        anothorPostionCopy -= 1
+                                        # get the next disk after this disk
+                                        disk3 = branch[anothorPostionCopy]
+                                        if not disk3.color:
+                                            break
+                                        else:
+                                            if disk3.color == aroundDisk.color:
+                                                continue
+                                            else:
+                                                # add the empty disk in the list, that he can move in it
+                                                emptyDisksCanMoveIn.append(disk2)
+                                                cond = False
+                                    else:
+                                        break
+                            else:
+                                break
+                        else:
+                            break
                     break
+
                 else:
                     position += 1
 
