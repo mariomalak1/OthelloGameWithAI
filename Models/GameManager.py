@@ -133,7 +133,6 @@ class GameManager:
         while True:
             possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
             if possibleMovesPlayer:
-                self.board.printBoard(possibleMovesPlayer)
                 # send data to computer to calulate most
                 playerMove = computerPlayer.getInputFromComputer(possibleMovesPlayer)
                 disk = self.board.getDiskFromPostion(playerMove)
