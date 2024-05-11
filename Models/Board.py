@@ -42,9 +42,17 @@ class Board:
 
 
     def getRowColOfDisk(self, position):
-        col = (position % Board.boardSize) - 1
-        row = position // Board.boardSize
-        return row, col
+        for i, row in enumerate(self.holeBoard):
+            for j, num in enumerate(row):
+                if num.position == position:
+                    return i, j
+        return None
+
+        # col = (position % Board.boardSize)
+        # if col > 0:
+        #     col -= 1
+        # row = position // Board.boardSize
+        # return row, col
 
 
     def putDiskInPosition(self, disk):
@@ -80,6 +88,8 @@ class Board:
             mayFlibed = []
 
             while True:
+                if position > len(branch) - 1:
+                    break
                 disk = branch[position]
                 if disk == playedDisk:
 
@@ -257,6 +267,7 @@ class Board:
             position = 0
             while True:
                 cond = True
+
                 # get the disk postion in the branch
                 disk = branch[position]
                 if disk == aroundDisk:
@@ -333,4 +344,3 @@ class Board:
         emptyDisksCanMoveIn = list(set(emptyDisksCanMoveIn))
 
         return emptyDisksCanMoveIn
-

@@ -56,6 +56,7 @@ class GameManager:
                             break
 
                     else:
+                        print("disk not avaliable : ", disk)
                         print("Enter position for move that in avaliable only.")
                 else:
                     skipped += 1
@@ -88,6 +89,7 @@ class GameManager:
             # check that the game is end
             # check if no one can play for now, then show the results
             if self.board.noEmptyDisk() or skipped == 2:
+                self.board.printBoard()
                 # check for draw
                 if self.checkDraw():
                     print("No one is winner, it's draw.")
