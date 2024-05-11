@@ -2,6 +2,10 @@ from .Player import Player
 
 
 class ComputerPlayer(Player):
+    _easyLevel = 0
+    _mediumLevel = 1
+    _hardLevel = 2
+
 
     def __init__(self, color, levelOfDiffcaltiy = 0):
         super().__init__("computer", color)

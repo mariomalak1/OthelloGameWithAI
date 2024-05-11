@@ -50,12 +50,13 @@ class GameManager:
             wayToPlay = input(
                 "if you want to play with computer press Y, else if you want to play with someone press X :")
             if wayToPlay.lower() == "y":
+                diff = self.chooseDiffcultyPlayingWithComputer()
                 self.playWay = GameManager._PlayWithComputer
 
                 if self.player1.name:
-                    self.player2 = ComputerPlayer.ComputerPlayer(color="white")
+                    self.player2 = ComputerPlayer.ComputerPlayer("white", diff)
                 else:
-                    self.player1 = ComputerPlayer.ComputerPlayer(color="black")
+                    self.player1 = ComputerPlayer.ComputerPlayer("black", diff)
                 break
             elif wayToPlay.lower() == "x":
                 self.playWay = GameManager._PlayWithSomeOne
@@ -69,6 +70,7 @@ class GameManager:
                 break
             else:
                 print("please enter valid input.")
+
         self.game()
 
     # has all logic for the game play
@@ -133,7 +135,7 @@ class GameManager:
         while True:
             possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
             if possibleMovesPlayer:
-                # send data to computer to calulate most
+                # send data to computer to calulate the move
                 playerMove = computerPlayer.getInputFromComputer(possibleMovesPlayer)
                 disk = self.board.getDiskFromPostion(playerMove)
 
@@ -197,3 +199,15 @@ class GameManager:
         if self.board.score[0] == self.board.score[1]:
             return True
         return False
+
+    def chooseDiffcultyPlayingWithComputer(self):
+        while True:
+            try:
+                diff = int(input("choose diffculty from easy, medium, and hard as 1, 2, 3 respectivly: "))
+                if diff in [1, 2, 3]:
+                    return diff
+                    break
+                else:
+                    print("please enter valid number from 1, 2, 3.")
+            except:
+                print("please enter valid response.")
