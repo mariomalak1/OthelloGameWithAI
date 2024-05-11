@@ -36,9 +36,9 @@ class Board:
                 print(f"{disk.position} {Fore.RESET}", end="|")
             print(Style.RESET_ALL + "\n" + "-" * 33)
 
-        black, white = self.getScoreNumber()
+        self.updateScoreNumber()
 
-        print(f"Score Black : {black} | White : {white}")
+        print(f"Score Black : {self.score[0]} | White : {self.score[1]}")
 
 
     def getRowColOfDisk(self, position):
@@ -53,7 +53,7 @@ class Board:
         self.holeBoard[row][col] = disk
 
 
-    def getScoreNumber(self):
+    def updateScoreNumber(self):
         blackNumber = 0
         whiteNumber = 0
 
@@ -63,7 +63,8 @@ class Board:
                     blackNumber += 1
                 elif disk.color == "white":
                     whiteNumber += 1
-        return blackNumber, whiteNumber
+        self.score[0] = blackNumber
+        self.score[1] = whiteNumber
 
     # get all disks needed to flibs
     def getFlibs(self, playedDisk: Disk):

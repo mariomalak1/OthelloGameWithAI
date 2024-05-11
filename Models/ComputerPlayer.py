@@ -1,5 +1,6 @@
 from .Player import Player
 
+import random
 
 class ComputerPlayer(Player):
     _easyLevel = 0
@@ -16,11 +17,5 @@ class ComputerPlayer(Player):
 
     # will return valid input for a user from 1 to 64
     def getInputFromComputer(self, possibleMoves: list) -> int:
-        while True:
-            number = self.diffcaltiy
-            try:
-                disk = possibleMoves[number]
-                return disk.position
-                break
-            except:
-                number -= 1
+        disk = random.choice(possibleMoves)
+        return disk.position
