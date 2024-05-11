@@ -10,7 +10,7 @@ class Player:
     def getInput(self) -> int:
         while True:
             try:
-                num = int(input("Enter place for your play as number from 1 to 64 : "))
+                num = int(input(f"{self.name}, Enter place for your play as number from 1 to 64 : "))
 
                 if num < 0 or num > 64:
                     print("you can't play outside board size !, please enter valid number")

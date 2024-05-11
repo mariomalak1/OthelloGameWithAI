@@ -35,7 +35,9 @@ class GameManager:
 
     # has all logic for the game play
     def game(self):
+        self.board.printBoard()
         while True:
+            skipped = 0
             while True:
                 possibleMovesPlayer1 = self.board.getPossibleMovesForPlayer(self.player1)
                 if possibleMovesPlayer1:
@@ -56,12 +58,36 @@ class GameManager:
                     else:
                         print("Enter position for move that in avaliable only.")
                 else:
+                    skipped += 1
                     print("Your turn skipped.")
+                    break
+
+            while True:
+                possibleMovesPlayer2 = self.board.getPossibleMovesForPlayer(self.player2)
+                if possibleMovesPlayer2:
+                    self.board.printBoard(possibleMovesPlayer2)
+                    playerMove = self.player2.getInput()
+                    disk = self.board.getDiskFromPostion(playerMove)
+
+                    if disk in possibleMovesPlayer2:
+                        disk.putColor(self.player2.color)
+                        disk.color = self.player2.color
+
+                        disksNeedToFlib = self.board.getFlibs(disk)
+
+                        if disksNeedToFlib:
+                            self.board.flibDisks(disksNeedToFlib)
+                            break
+                    else:
+                        print("Enter position for move that in avaliable only.")
+                else:
+                    print("Your turn skipped.")
+                    skipped += 1
                     break
 
             # check that the game is end
             # check if no one can play for now, then show the results
-            if self.board.noEmptyDisk():
+            if self.board.noEmptyDisk() or skipped == 2:
                 # check for draw
                 if self.checkDraw():
                     print("No one is winner, it's draw.")

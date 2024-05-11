@@ -64,48 +64,6 @@ class Board:
                     whiteNumber += 1
         return blackNumber, whiteNumber
 
-    def getPossibleMovesForPlayer(self, player):
-        allPossibleMoves = []
-        for row in self.holeBoard:
-            for cell in row:
-                if cell.color:
-                    if cell.color != player.color:
-                        allEmptyDisksAround = self.getAllEmptyDisksAroundDisk(cell)
-                        allPossibleMoves = list(set(allPossibleMoves + allEmptyDisksAround))
-
-        return allPossibleMoves
-
-    # to get all disks around a disk that empty
-    def getAllEmptyDisksAroundDisk(self, disk: Disk) -> list:
-        row, col = self.getRowColOfDisk(disk.position)
-        emptyDisks = []
-
-        # get the left disk if found and not empty
-        if not col - 1 < 0:
-            disk1 = self.holeBoard[row][col - 1]
-            if not disk1.color:
-                emptyDisks.append(disk1)
-
-        # get the right disk if found and not empty
-        if not col + 1 > 7:
-            disk2 = self.holeBoard[row][col + 1]
-            if not disk2.color:
-                emptyDisks.append(disk2)
-
-        # get the above disk if found and not empty
-        if not row - 1 < 0:
-            disk3 = self.holeBoard[row - 1][col]
-            if not disk3.color:
-                emptyDisks.append(disk3)
-
-        # get the down disk if found and not empty
-        if not row + 1 > 7:
-            disk4 = self.holeBoard[row + 1][col]
-            if not disk4.color:
-                emptyDisks.append(disk4)
-
-        return emptyDisks
-
     # get all disks needed to flibs
     def getFlibs(self, playedDisk: Disk):
         getFlibed = []
@@ -128,14 +86,13 @@ class Board:
                     # try to get left way
                     copyPoistion = position
                     while True:
-                        if copyPoistion > 0:
+                        if copyPoistion > len(branch):
                             copyPoistion -= 1
                             disk2 = branch[copyPoistion]
                             if not disk2.color:
                                 mayFlibed.clear()
                                 break
                             else:
-                                print("disk2.color : ", disk2.color, " playedDisk.color : ", playedDisk.color)
                                 if disk2.color != playedDisk.color:
                                     mayFlibed.append(disk2)
                                 else:
@@ -147,14 +104,13 @@ class Board:
                     # try to get right way
                     copyPoistion = position
                     while True:
-                        if copyPoistion < 7:
+                        if copyPoistion < len(branch) - 1:
                             copyPoistion += 1
                             disk2 = branch[copyPoistion]
                             if not disk2.color:
                                 mayFlibed.clear()
                                 break
                             else:
-                                print("disk2.color : ", disk2.color, " playedDisk.color : ", playedDisk.color)
                                 if disk2.color != playedDisk.color:
                                     mayFlibed.append(disk2)
                                 else:
@@ -169,8 +125,6 @@ class Board:
 
         # to remove dublicates
         getFlibed = list(set(getFlibed))
-
-        print(getFlibed)
 
         return getFlibed
 
@@ -207,7 +161,6 @@ class Board:
             copyRow -= 1
             copyCol += 1
             if (copyRow <= 7 and copyRow >= 0 and copyCol <= 7 and copyCol >= 0):
-                print(copyRow, copyCol)
                 disk = self.holeBoard[copyRow][copyCol]
                 rightDiagonal.append(disk)
             else:
@@ -278,3 +231,73 @@ class Board:
                 if not cell.color:
                     return False
         return True
+
+    def getPossibleMovesForPlayer(self, player):
+        allPossibleMoves = []
+        for row in self.holeBoard:
+            for cell in row:
+                if cell.color:
+                    if cell.color != player.color:
+                        # get possible moves around disk
+                        allPossibleMovesAroundDisk = self.getPossibleMovesAroundDisk(cell)
+                        allPossibleMoves = list(set(allPossibleMoves + allPossibleMovesAroundDisk))
+        return allPossibleMoves
+
+    def getPossibleMovesAroundDisk(self, aroundDisk: Disk):
+        row, col = self.getRowColOfDisk(aroundDisk.position)
+        emptyDisksCanMoveIn = []
+
+        rightBranch, leftBranch = self.getAllDisksInDiagonal(row, col)
+        allDisksInRow = self.getAllDisksInRow(row)
+        allDisksInCol = self.getAllDisksInCol(col)
+
+        branches = [allDisksInCol, rightBranch, leftBranch, allDisksInRow]
+
+        for branch in branches:
+            position = 0
+            while True:
+                # get the disk postion in the branch
+                disk = branch[position]
+                if disk == aroundDisk:
+                    copyPostion = position
+                    while True:
+                        if copyPostion > 0:
+                            copyPostion -= 1
+                            disk2 = branch[copyPostion]
+                            # if this disk is empty
+                            if not disk2.color:
+                                anothorPostionCopy = position
+                                # try to see if there's another disk with oppsite color in this branch in the other way
+                                while True:
+                                    if anothorPostionCopy < len(branch) - 1:
+                                        anothorPostionCopy += 1
+                                        # get the next disk after this disk
+                                        disk3 = branch[anothorPostionCopy]
+                                        print("disk3 : ", disk3)
+                                        if not disk3.color:
+                                            break
+                                        else:
+                                            if disk3.color == aroundDisk.color:
+                                                continue
+                                            else:
+                                                # add the empty disk in the list, that he can move in it
+                                                emptyDisksCanMoveIn.append(disk2)
+                                                break
+                                    else:
+                                        break
+                            else:
+                                break
+                        else:
+                            break
+
+                    break
+                else:
+                    position += 1
+
+
+
+        # to remove dublicates
+        emptyDisksCanMoveIn = list(set(emptyDisksCanMoveIn))
+
+        return emptyDisksCanMoveIn
+
