@@ -48,13 +48,6 @@ class Board:
                     return i, j
         return None
 
-        # col = (position % Board.boardSize)
-        # if col > 0:
-        #     col -= 1
-        # row = position // Board.boardSize
-        # return row, col
-
-
     def putDiskInPosition(self, disk):
         row, col = self.getRowColOfDisk(disk.position)
         self.holeBoard[row][col] = disk

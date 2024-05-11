@@ -1,4 +1,4 @@
-from . import Player, Board, Disk
+from . import Player, Board, Disk, ComputerPlayer
 
 class GameManager:
     _PlayWithComputer = 1
@@ -7,8 +7,8 @@ class GameManager:
     def __init__(self):
         self.board = Board.Board()
 
-        self.player1 = Player.Player(None, None)
-        self.player2 = Player.Player(None, None)
+        self.player1 = Player.Player(None, "black")
+        self.player2 = Player.Player(None, "white")
         self.playWay = 0
 
     # will start the game from scratch, and ask the first user his name
@@ -17,8 +17,18 @@ class GameManager:
 
         # first player will be black
         name = input("What's your name : ")
-        self.player1.name = name
-        self.player1.color = "black"
+
+        print(f"Hey {name}, ", end="")
+        while True:
+            blackOrWhite = input(f"you want to play with black or white, for black enter b, for white enter w : ")
+            if blackOrWhite.lower() == "b":
+                self.player1.name = name
+                break
+            elif blackOrWhite.lower() == "w":
+                self.player2.name = name
+                break
+            else:
+                print("please enter valid response.")
 
         # create four disks as a begin of the game, and center them in the middle
         blackDisk1 = Disk.Disk("black", 29)
@@ -31,101 +41,141 @@ class GameManager:
         self.board.putDiskInPosition(blackDisk2)
         self.board.putDiskInPosition(whiteDisk2)
 
-        self.main()
+        self.gameHome()
 
-    # has all logic for the game play
-    def game(self):
-        self.board.printBoard()
-        while True:
-            skipped = 0
-            while True:
-                possibleMovesPlayer1 = self.board.getPossibleMovesForPlayer(self.player1)
-                if possibleMovesPlayer1:
-                    self.board.printBoard(possibleMovesPlayer1)
-                    playerMove = self.player1.getInput()
-                    disk = self.board.getDiskFromPostion(playerMove)
-
-                    if disk in possibleMovesPlayer1:
-                        disk.putColor(self.player1.color)
-                        disk.color = self.player1.color
-
-                        disksNeedToFlib = self.board.getFlibs(disk)
-
-                        if disksNeedToFlib:
-                            self.board.flibDisks(disksNeedToFlib)
-                            break
-
-                    else:
-                        print("disk not avaliable : ", disk)
-                        print("Enter position for move that in avaliable only.")
-                else:
-                    skipped += 1
-                    print("Your turn skipped.")
-                    break
-
-            while True:
-                possibleMovesPlayer2 = self.board.getPossibleMovesForPlayer(self.player2)
-                if possibleMovesPlayer2:
-                    self.board.printBoard(possibleMovesPlayer2)
-                    playerMove = self.player2.getInput()
-                    disk = self.board.getDiskFromPostion(playerMove)
-
-                    if disk in possibleMovesPlayer2:
-                        disk.putColor(self.player2.color)
-                        disk.color = self.player2.color
-
-                        disksNeedToFlib = self.board.getFlibs(disk)
-
-                        if disksNeedToFlib:
-                            self.board.flibDisks(disksNeedToFlib)
-                            break
-                    else:
-                        print("Enter position for move that in avaliable only.")
-                else:
-                    print("Your turn skipped.")
-                    skipped += 1
-                    break
-
-            # check that the game is end
-            # check if no one can play for now, then show the results
-            if self.board.noEmptyDisk() or skipped == 2:
-                self.board.printBoard()
-                # check for draw
-                if self.checkDraw():
-                    print("No one is winner, it's draw.")
-                    self.endOfGame()
-
-                # check if anyone win
-                winner = self.checkWinner()
-
-                if winner:
-                    if winner.name == "computer":
-                        print("you lose.")
-                    self.endOfGame()
-
-
-    # will get all needed data from user -> like name, color, need to play with computer or someone as an opponent
-    def main(self):
+    # and get all needed data from user -> like name, color, need to play with computer or someone as an opponent
+    def gameHome(self):
         # ask him to play with computer or will play with someone
         while True:
             wayToPlay = input(
-                f"hey {self.player1.name} if you want to play with computer press Y, else if you want to play with someone press X :")
+                "if you want to play with computer press Y, else if you want to play with someone press X :")
             if wayToPlay.lower() == "y":
                 self.playWay = GameManager._PlayWithComputer
-                self.player2.name = "computer"
-                self.player2.color = "white"
+
+                if self.player1.name:
+                    self.player2 = ComputerPlayer.ComputerPlayer(color="white")
+                else:
+                    self.player1 = ComputerPlayer.ComputerPlayer(color="black")
                 break
             elif wayToPlay.lower() == "x":
                 self.playWay = GameManager._PlayWithSomeOne
                 name = input("What's his name : ")
-                self.player2.name = name
-                self.player2.color = "white"
+                if self.player1.name:
+                    self.player2.name = name
+                    self.player2.color = "white"
+                else:
+                    self.player1.name = name
+                    self.player1.color = "black"
                 break
             else:
                 print("please enter valid input.")
-
-        # start the game pay
         self.game()
+
+    # has all logic for the game play
+    def game(self):
+        skipList = []
+
+        if self.playWay == self._PlayWithComputer:
+            while True:
+                if self.player1.name == "computer":
+                    self.computerPlay(self.player1, skipList)
+                    self.HumanPlay(self.player2, skipList)
+                else:
+                    self.HumanPlay(self.player1, skipList)
+                    self.computerPlay(self.player2, skipList)
+
+                # check that the game is end
+                # check if no one can play for now, then show the results
+                if self.board.noEmptyDisk() or len(skipList) == 2:
+                    self.board.printBoard()
+                    # check for draw
+                    if self.checkDraw():
+                        print("No winner, it's draw.")
+                        break
+
+                    # check if anyone win
+                    winner = self.checkWinner()
+
+                    if winner:
+                        if winner.name == "computer":
+                            print("you lose.")
+                        else:
+                            print("congratulations, you are win")
+                        break
+                else:
+                    skipList.clear()
+        else:
+            while True:
+                self.HumanPlay(self.player1, skipList)
+                self.HumanPlay(self.player2, skipList)
+
+                # check that the game is end
+                # check if no one can play for now, then show the results
+                if self.board.noEmptyDisk() or len(skipList) == 2:
+                    self.board.printBoard()
+                    # check for draw
+                    if self.checkDraw():
+                        print("No one is winner, it's draw.")
+                        break
+
+                    # check if anyone win
+                    winner = self.checkWinner()
+
+                    if winner:
+                        print(f"the winner is {winner.name} with color {winner.color}")
+                        break
+                else:
+                    skipList.clear()
+
+        self.endOfGame()
+
+    def computerPlay(self, computerPlayer:ComputerPlayer, skipList: list):
+        while True:
+            possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
+            if possibleMovesPlayer:
+                self.board.printBoard(possibleMovesPlayer)
+                # send data to computer to calulate most
+                playerMove = computerPlayer.getInputFromComputer(possibleMovesPlayer)
+                disk = self.board.getDiskFromPostion(playerMove)
+
+                if disk in possibleMovesPlayer:
+                    disk.putColor(computerPlayer.color)
+                    disk.color = computerPlayer.color
+
+                    disksNeedToFlib = self.board.getFlibs(disk)
+
+                    if disksNeedToFlib:
+                        self.board.flibDisks(disksNeedToFlib)
+                        break
+            else:
+                print("Computer turn skipped.")
+                skipList.append(1)
+                break
+
+    def HumanPlay(self, player: Player, skipList: list):
+        while True:
+            possibleMovesPlayer = self.board.getPossibleMovesForPlayer(player)
+            if possibleMovesPlayer:
+                self.board.printBoard(possibleMovesPlayer)
+                playerMove = player.getInput()
+                disk = self.board.getDiskFromPostion(playerMove)
+
+                if disk in possibleMovesPlayer:
+                    disk.putColor(player.color)
+                    disk.color = player.color
+
+                    disksNeedToFlib = self.board.getFlibs(disk)
+
+                    if disksNeedToFlib:
+                        self.board.flibDisks(disksNeedToFlib)
+                        break
+
+                else:
+                    print("Enter position for move that in avaliable only.")
+            else:
+                print("Your turn skipped.")
+                skipList.append(1)
+                break
 
     def endOfGame(self):
         print("game finish.")
