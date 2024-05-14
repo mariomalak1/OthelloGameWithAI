@@ -135,7 +135,11 @@ class GameManager:
         possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
         if possibleMovesPlayer:
             playerMove = computerPlayer.getInputFromComputer(self.board, possibleMovesPlayer)
-            disk = self.board.getDiskFromPosition(playerMove)  # Corrected to the existing method name
+            if playerMove is None:
+                print("No valid move found for AI.")
+                skipList.append(1)  # Indicates the computer skipped its turn
+                return
+            disk = self.board.getDiskFromPosition(playerMove)
 
             if disk in possibleMovesPlayer:
                 disk.putColor(computerPlayer.color)
