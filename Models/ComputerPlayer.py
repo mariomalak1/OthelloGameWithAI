@@ -42,7 +42,9 @@ class ComputerPlayer(Player):
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-            return best_move, max_eval
+            if best_move:
+                return best_move, max_eval
+            return random.choice(possibleMoves).position
         else:
             min_eval = float('inf')
             best_move = None
@@ -56,7 +58,9 @@ class ComputerPlayer(Player):
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-            return best_move, min_eval
+            if best_move:
+                return best_move, min_eval
+            return random.choice(possibleMoves).position
 
    
     def evaluate_board(self, board):
@@ -64,9 +68,9 @@ class ComputerPlayer(Player):
         return board.score[0] if self.color == "black" else board.score[1]
 
 
-    def cloneBoard(self):
+    def cloneBoard(self, board):
         # Create a deep copy of the board
-        return deepcopy(self)
+        return deepcopy(board)
 
     def simulateMove(self, board, position, color):
         # Assume position is already a valid move
