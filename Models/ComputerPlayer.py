@@ -1,6 +1,9 @@
+import random
+from copy import deepcopy
+
 from .Player import Player
 from .Disk import Disk
-import random
+
 
 class ComputerPlayer(Player):
     _easyLevel = 1
@@ -30,8 +33,8 @@ class ComputerPlayer(Player):
             max_eval = float('-inf')
             best_move = None
             for move in board.getPossibleMovesForPlayer(self):
-                simulated_board = board.clone()
-                simulated_board.simulateMove(move.position, self.color)
+                simulated_board = self.cloneBoard(board)
+                self.simulateMove(simulated_board, move.position, self.color)
                 _, eval = self.alpha_beta(simulated_board, depth - 1, alpha, beta, False)
                 if eval > max_eval:
                     max_eval = eval
@@ -44,8 +47,8 @@ class ComputerPlayer(Player):
             min_eval = float('inf')
             best_move = None
             for move in board.getPossibleMovesForPlayer(self):
-                simulated_board = board.clone()
-                simulated_board.simulateMove(move.position, self.color)
+                simulated_board = self.cloneBoard(board)
+                self.simulateMove(simulated_board, move.position, self.color)
                 _, eval = self.alpha_beta(simulated_board, depth - 1, alpha, beta, True)
                 if eval < min_eval:
                     min_eval = eval
@@ -59,4 +62,16 @@ class ComputerPlayer(Player):
     def evaluate_board(self, board):
         #simple ocunter of disks  
         return board.score[0] if self.color == "black" else board.score[1]
+
+
+    def cloneBoard(self):
+        # Create a deep copy of the board
+        return deepcopy(self)
+
+    def simulateMove(self, board, position, color):
+        # Assume position is already a valid move
+        new_disk = Disk(color=color, position=position)
+        board.putDiskInPosition(new_disk)  # Place the new disk on the board
+        disks_to_flip = board.getFlibs(new_disk)  # Find all disks to flip as a result of this move
+        board.flibDisks(disks_to_flip)  # Flip the disks
 

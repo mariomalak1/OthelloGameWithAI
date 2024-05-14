@@ -1,5 +1,4 @@
 from colorama import Fore, Style
-from copy import deepcopy
 from .Disk import Disk
 
 class Board:
@@ -338,14 +337,3 @@ class Board:
         emptyDisksCanMoveIn = list(set(emptyDisksCanMoveIn))
 
         return emptyDisksCanMoveIn
-
-    def clone(self):
-        # Create a deep copy of the board
-        return deepcopy(self)
-
-    def simulateMove(self, position, color):
-        # Assume position is already a valid move
-        new_disk = Disk(color=color, position=position)
-        self.putDiskInPosition(new_disk)  # Place the new disk on the board
-        disks_to_flip = self.getFlibs(new_disk)  # Find all disks to flip as a result of this move
-        self.flibDisks(disks_to_flip)  # Flip the disks
