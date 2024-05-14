@@ -55,8 +55,8 @@ class ComputerPlayer(Player):
                     break
             return best_move, min_eval
 
-    """
+   
     def evaluate_board(self, board):
         #simple ocunter of disks  
         return board.score[0] if self.color == "black" else board.score[1]
-"""
+
