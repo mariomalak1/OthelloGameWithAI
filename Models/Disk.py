@@ -39,4 +39,3 @@ class Disk:
             str_ += " Color : " + self.color
         return str(str_)
 
-

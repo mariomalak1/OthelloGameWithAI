@@ -131,53 +131,43 @@ class GameManager:
 
         self.endOfGame()
 
-    def computerPlay(self, computerPlayer:ComputerPlayer, skipList: list):
-        while True:
-            possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
-            if possibleMovesPlayer:
-                # send data to computer to calulate the move
-                playerMove = computerPlayer.getInputFromComputer(possibleMovesPlayer)
-                disk = self.board.getDiskFromPostion(playerMove)
+    def computerPlay(self, computerPlayer: ComputerPlayer, skipList: list):
+        possibleMovesPlayer = self.board.getPossibleMovesForPlayer(computerPlayer)
+        if possibleMovesPlayer:
+            playerMove = computerPlayer.getInputFromComputer(self.board, possibleMovesPlayer)
+            disk = self.board.getDiskFromPosition(playerMove)  # Corrected to the existing method name
 
-                if disk in possibleMovesPlayer:
-                    disk.putColor(computerPlayer.color)
-                    disk.color = computerPlayer.color
+            if disk in possibleMovesPlayer:
+                disk.putColor(computerPlayer.color)
+                disk.color = computerPlayer.color
+                disksNeedToFlib = self.board.getFlibs(disk)
+                if disksNeedToFlib:
+                    self.board.flibDisks(disksNeedToFlib)
+        else:
+            print("Computer turn skipped.")
+            skipList.append(1)
 
-                    disksNeedToFlib = self.board.getFlibs(disk)
-
-                    if disksNeedToFlib:
-                        self.board.flibDisks(disksNeedToFlib)
-                        break
-            else:
-                print("Computer turn skipped.")
-                skipList.append(1)
-                break
-
-    def HumanPlay(self, player: Player, skipList: list):
+    def HumanPlay(self, player, skipList):
         while True:
             possibleMovesPlayer = self.board.getPossibleMovesForPlayer(player)
             if possibleMovesPlayer:
                 self.board.printBoard(possibleMovesPlayer)
                 playerMove = player.getInput()
-                disk = self.board.getDiskFromPostion(playerMove)
+                disk = self.board.getDiskFromPosition(playerMove)
 
                 if disk in possibleMovesPlayer:
                     disk.putColor(player.color)
                     disk.color = player.color
-
                     disksNeedToFlib = self.board.getFlibs(disk)
-
                     if disksNeedToFlib:
                         self.board.flibDisks(disksNeedToFlib)
                         break
-
                 else:
-                    print("Enter position for move that in avaliable only.")
+                    print("Enter position for move that is available only.")
             else:
                 print("Your turn skipped.")
                 skipList.append(1)
                 break
-
     def endOfGame(self):
         print("game finish.")
         playAgain = input("if you want to play again press Y, else press X: ")
