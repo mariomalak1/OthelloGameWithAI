@@ -3,7 +3,6 @@ from colorama import Fore, Style
 from .Disk import Disk
 
 class Board:
-    boardSize = 8
 
     def __init__(self):
         # in first the two players will have two disks
