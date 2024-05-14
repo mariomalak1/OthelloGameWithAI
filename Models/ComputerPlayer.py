@@ -23,7 +23,11 @@ class ComputerPlayer(Player):
         if self.difficulty == 1:  # If the difficulty is set to easy, choose randomly
             return random.choice(possibleMoves).position
         best_move, best_score = self.alpha_beta(board, self.difficulty, -float('inf'), float('inf'), True)
-        return best_move.position if best_move else None
+
+        # if algoritm get solution return it, else return any random value from list
+        if best_move:
+            return best_move.position
+        return random.choice(possibleMoves).position
 
     def alpha_beta(self, board, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or board.noEmptyDisk():
@@ -42,9 +46,7 @@ class ComputerPlayer(Player):
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-            if best_move:
-                return best_move, max_eval
-            return random.choice(possibleMoves).position
+            return best_move, max_eval
         else:
             min_eval = float('inf')
             best_move = None
@@ -58,9 +60,7 @@ class ComputerPlayer(Player):
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-            if best_move:
-                return best_move, min_eval
-            return random.choice(possibleMoves).position
+            return best_move, min_eval
 
    
     def evaluate_board(self, board):
