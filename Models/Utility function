@@ -1,3 +1,4 @@
+from . import Player, Board, Disk, ComputerPlayer
 def evaluate_game_state(board, player):
     opponent = -player
 
