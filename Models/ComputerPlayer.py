@@ -63,13 +63,11 @@ class ComputerPlayer(Player):
             return best_move, min_eval
 
    
-    def evaluate_board(self, board):
-        #simple ocunter of disks  
-        return board.score[0] if self.color == "black" else board.score[1]
+
 
 
     def cloneBoard(self, board):
-        # Create a deep copy of the board
+        
         return deepcopy(board)
 
     def simulateMove(self, board, position, color):
@@ -79,3 +77,41 @@ class ComputerPlayer(Player):
         disks_to_flip = board.getFlibs(new_disk)  # Find all disks to flip as a result of this move
         board.flibDisks(disks_to_flip)  # Flip the disks
 
+    def evaluate_board(self, board):
+       
+        black_score = board.score[0]
+        white_score = board.score[1]
+
+        # Strategic positions: corners
+        corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
+        corner_value = 3  #  strategic advantage of corners
+        black_corners = 0
+        white_corners = 0
+
+        for x, y in corners:
+            if board.holeBoard[x][y].color == "black":
+                black_corners += 1
+            elif board.holeBoard[x][y].color == "white":
+                white_corners += 1
+
+        #legal movess
+        black_mobility = len(board.getPossibleMovesForPlayer("black"))
+        white_mobility = len(board.getPossibleMovesForPlayer("white"))
+        mobility_value = 0.5  # Adjust weight as needed
+
+        #  score components
+        if self.color == "black":
+            my_corner_control = black_corners * corner_value
+            opponent_corner_control = white_corners * corner_value
+            my_mobility = black_mobility * mobility_value
+            opponent_mobility = white_mobility * mobility_value
+        else:
+            my_corner_control = white_corners * corner_value
+            opponent_corner_control = black_corners * corner_value
+            my_mobility = white_mobility * mobility_value
+            opponent_mobility = black_mobility * mobility_value
+
+        
+        score = (black_score - white_score) + (my_corner_control - opponent_corner_control) + (
+                    my_mobility - opponent_mobility)
+        return score
