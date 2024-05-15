@@ -62,12 +62,8 @@ class ComputerPlayer(Player):
                     break
             return best_move, min_eval
 
-   
-
-
-
     def cloneBoard(self, board):
-        
+
         return deepcopy(board)
 
     def simulateMove(self, board, position, color):
@@ -78,13 +74,13 @@ class ComputerPlayer(Player):
         board.flibDisks(disks_to_flip)  # Flip the disks
 
     def evaluate_board(self, board):
-       
+
         black_score = board.score[0]
         white_score = board.score[1]
 
         # Strategic positions: corners
         corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
-        corner_value = 3  #  strategic advantage of corners
+        corner_value = 3
         black_corners = 0
         white_corners = 0
 
@@ -94,9 +90,9 @@ class ComputerPlayer(Player):
             elif board.holeBoard[x][y].color == "white":
                 white_corners += 1
 
-        #legal movess
-        black_mobility = len(board.getPossibleMovesForPlayer("black"))
-        white_mobility = len(board.getPossibleMovesForPlayer("white"))
+        # legal movess
+        black_mobility = len(board.getPossibleMovesForPlayer(Player(None, "black")))
+        white_mobility = len(board.getPossibleMovesForPlayer(Player(None, "white")))
         mobility_value = 0.5  # Adjust weight as needed
 
         #  score components
@@ -111,7 +107,6 @@ class ComputerPlayer(Player):
             my_mobility = white_mobility * mobility_value
             opponent_mobility = black_mobility * mobility_value
 
-        
         score = (black_score - white_score) + (my_corner_control - opponent_corner_control) + (
-                    my_mobility - opponent_mobility)
+                my_mobility - opponent_mobility)
         return score
